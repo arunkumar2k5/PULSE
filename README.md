@@ -9,13 +9,25 @@ An AI-powered web application that converts natural language requirements into P
 
 ## 🚀 Features
 
+### Single Mode
 - **AI-Powered Generation**: Convert natural language to PlantUML using Claude 3.5 Sonnet (or any OpenRouter-compatible LLM)
 - **Live Preview**: Real-time diagram rendering with zoom and pan controls
 - **Monaco Editor**: VS Code-style editor with syntax support
 - **Smart Chat Interface**: Interactive AI assistant for diagram creation
 - **Multiple Export Formats**: Download as SVG, PNG, or raw .puml files
-- **Dockerized**: Complete containerization for easy deployment
 - **Debounced Rendering**: Optimized to prevent server spam (500ms delay)
+
+### Batch Mode ✨ NEW
+- **Excel Upload**: Process multiple requirements from Excel files
+- **Automated Bulk Processing**: Generate PlantUML diagrams for all requirements at once
+- **Progress Tracking**: Beautiful animated progress bar with real-time status
+- **Batch Export**: Automatically save .puml code and .png diagrams for each requirement
+- **Error Reporting**: Detailed success/failure statistics and error logs
+- **Smart Parsing**: Automatically detects SYS ID and SYS Requirement columns
+
+### General
+- **Dockerized**: Complete containerization for easy deployment
+- **Tab Navigation**: Easy switching between Single and Batch modes
 
 ## 🏗️ Architecture
 
@@ -30,6 +42,7 @@ An AI-powered web application that converts natural language requirements into P
 - **Diagram Rendering**: PlantUML Server
 - **Zoom/Pan**: react-zoom-pan-pinch
 - **Encoding**: plantuml-encoder
+- **Excel Parsing**: xlsx (for batch mode)
 
 ### Project Structure
 
@@ -37,12 +50,15 @@ An AI-powered web application that converts natural language requirements into P
 PULSE/
 ├── src/
 │   ├── components/
-│   │   ├── ChatPanel.jsx       # AI chat interface
-│   │   ├── CodeEditor.jsx      # Monaco editor component
-│   │   └── DiagramPreview.jsx  # Live preview with zoom/pan
+│   │   ├── ChatPanel.jsx       # AI chat interface (Single Mode)
+│   │   ├── CodeEditor.jsx      # Monaco editor component (Single Mode)
+│   │   ├── DiagramPreview.jsx  # Live preview with zoom/pan (Single Mode)
+│   │   ├── BatchPanel.jsx      # Batch processing interface ✨ NEW
+│   │   └── ProgressBar.jsx     # Animated progress bar ✨ NEW
 │   ├── services/
 │   │   ├── llmService.js       # OpenRouter API integration
-│   │   └── plantUmlService.js  # PlantUML encoding & rendering
+│   │   ├── plantUmlService.js  # PlantUML encoding & rendering
+│   │   └── batchService.js     # Excel parsing & batch processing ✨ NEW
 │   ├── store/
 │   │   └── useAppStore.js      # Zustand state management
 │   ├── App.jsx                 # Main application component
@@ -51,7 +67,9 @@ PULSE/
 ├── docker-compose.yml          # Docker orchestration
 ├── Dockerfile                  # Frontend container
 ├── nginx.conf                  # Nginx configuration
-└── package.json                # Dependencies
+├── package.json                # Dependencies
+├── BATCH_MODE_GUIDE.md         # Batch mode documentation ✨ NEW
+└── README.md                   # This file
 ```
 
 ## 📦 Installation
@@ -112,7 +130,7 @@ PULSE/
 
 ## 🎯 Usage
 
-### Creating Diagrams with AI
+### Single Mode - Creating Diagrams with AI
 
 1. **Enter a natural language prompt** in the chat panel:
    ```
@@ -125,19 +143,41 @@ PULSE/
 
 4. **Edit manually** if needed - changes reflect immediately (with 500ms debounce)
 
-### Example Prompts
+#### Example Prompts
 
 - "Create a class diagram for an e-commerce system"
 - "Generate a sequence diagram showing OAuth2 authentication flow"
 - "Make an activity diagram for order processing"
 - "Design a component diagram for a microservices architecture"
 
-### Exporting Diagrams
+#### Exporting Diagrams
 
 Click the **Export** button in the preview panel to download:
 - **SVG**: Vector format (recommended for scaling)
 - **PNG**: Raster image format
 - **Code**: Raw `.puml` file for version control
+
+### Batch Mode - Processing Multiple Requirements ✨ NEW
+
+1. **Switch to Batch Mode** by clicking the "Batch Mode" tab at the top
+
+2. **Prepare Excel File** with columns:
+   - Column B: **SYS ID** (e.g., REQ-001, REQ-002)
+   - Column C: **SYS Requirement** (requirement text)
+
+3. **Upload Excel File** using the "Choose Excel File" button
+
+4. **Select Output Folder** (optional) - files will download to your Downloads folder
+
+5. **Start Processing** - Click "Start Batch Processing"
+   - Watch the animated progress bar
+   - Each requirement generates:
+     - `{SYS_ID}.puml` - PlantUML code file
+     - `{SYS_ID}.png` - Diagram image
+
+6. **Review Results** - See success/failure statistics and error details
+
+📖 **For detailed batch mode instructions, see [BATCH_MODE_GUIDE.md](./BATCH_MODE_GUIDE.md)**
 
 ## 🔧 Configuration
 
