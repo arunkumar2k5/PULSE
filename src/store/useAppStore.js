@@ -28,4 +28,33 @@ export const useAppStore = create((set) => ({
   error: null,
   setError: (error) => set({ error }),
   clearError: () => set({ error: null }),
+
+  // Mode Selection (Single or Batch)
+  mode: 'single', // 'single' or 'batch'
+  setMode: (mode) => set({ mode }),
+
+  // Batch Processing State
+  batchData: [],
+  setBatchData: (data) => set({ batchData: data }),
+  
+  batchProgress: {
+    total: 0,
+    current: 0,
+    currentItem: '',
+    status: 'idle', // 'idle', 'processing', 'completed', 'error'
+  },
+  setBatchProgress: (progress) => set((state) => ({
+    batchProgress: { ...state.batchProgress, ...progress }
+  })),
+  resetBatchProgress: () => set({
+    batchProgress: {
+      total: 0,
+      current: 0,
+      currentItem: '',
+      status: 'idle',
+    }
+  }),
+
+  outputFolder: '',
+  setOutputFolder: (folder) => set({ outputFolder: folder }),
 }));

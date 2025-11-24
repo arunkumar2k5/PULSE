@@ -1,9 +1,14 @@
-import { Zap } from 'lucide-react';
+import { Zap, Layers, Zap as ZapIcon } from 'lucide-react';
 import ChatPanel from './components/ChatPanel';
 import CodeEditor from './components/CodeEditor';
 import DiagramPreview from './components/DiagramPreview';
+import BatchPanel from './components/BatchPanel';
+import ProgressBar from './components/ProgressBar';
+import { useAppStore } from './store/useAppStore';
 
 function App() {
+  const { mode, setMode } = useAppStore();
+
   return (
     <div className="h-screen flex flex-col bg-gray-100">
       {/* Header */}
@@ -16,6 +21,33 @@ function App() {
               <p className="text-xs text-blue-100">PlantUML Script Engine</p>
             </div>
           </div>
+          
+          {/* Tab Navigation */}
+          <div className="flex items-center gap-2 bg-white/10 rounded-lg p-1">
+            <button
+              onClick={() => setMode('single')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all ${
+                mode === 'single'
+                  ? 'bg-white text-blue-600 shadow-md'
+                  : 'text-white hover:bg-white/20'
+              }`}
+            >
+              <ZapIcon className="w-4 h-4" />
+              <span className="text-sm font-medium">Single Mode</span>
+            </button>
+            <button
+              onClick={() => setMode('batch')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all ${
+                mode === 'batch'
+                  ? 'bg-white text-purple-600 shadow-md'
+                  : 'text-white hover:bg-white/20'
+              }`}
+            >
+              <Layers className="w-4 h-4" />
+              <span className="text-sm font-medium">Batch Mode</span>
+            </button>
+          </div>
+
           <div className="text-right">
             <p className="text-sm font-medium">AI-Powered Diagram Studio</p>
             <p className="text-xs text-blue-100">Powered by Claude 3.5 Sonnet</p>
@@ -25,23 +57,32 @@ function App() {
 
       {/* Main Content */}
       <main className="flex-1 overflow-hidden">
-        <div className="h-full grid grid-cols-12 gap-0">
-          {/* Chat Panel - Left */}
-          <div className="col-span-3 h-full">
-            <ChatPanel />
-          </div>
+        {mode === 'single' ? (
+          <div className="h-full grid grid-cols-12 gap-0">
+            {/* Chat Panel - Left */}
+            <div className="col-span-3 h-full">
+              <ChatPanel />
+            </div>
 
-          {/* Code Editor - Middle */}
-          <div className="col-span-4 h-full">
-            <CodeEditor />
-          </div>
+            {/* Code Editor - Middle */}
+            <div className="col-span-4 h-full">
+              <CodeEditor />
+            </div>
 
-          {/* Preview Panel - Right */}
-          <div className="col-span-5 h-full">
-            <DiagramPreview />
+            {/* Preview Panel - Right */}
+            <div className="col-span-5 h-full">
+              <DiagramPreview />
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="h-full">
+            <BatchPanel />
+          </div>
+        )}
       </main>
+
+      {/* Progress Bar */}
+      <ProgressBar />
 
       {/* Footer */}
       <footer className="bg-white border-t border-gray-200 px-6 py-2">
